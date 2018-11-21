@@ -18,10 +18,10 @@ kcal = [329, 339, 334, 341, 460, 90, 128, 205, 453]
 
 tam_dna = 9
 qtd_ind = 100
-geracoes = 2000
-prob_mutacao = 5
+geracoes = 20000
+prob_mutacao = 3
 amp_mut = 0.5
-individuos_salvos = 3
+individuos_salvos = 2
 tipo = 'maximizacao' # maximizacao ou minimizacao
 
 #%% Definicao dos limites
@@ -87,4 +87,4 @@ for i in range(0, len(dna_best)):
 
 print('Peso da mochila: %.1f gramas' %peso)
 print('Total de calorias: %.1f kcal' %melhor)
-
+print('Da pra viver em torno de: %.1f dias' %(melhor/2000))
