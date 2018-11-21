@@ -14,11 +14,12 @@ rand.seed(None)
 
 nomes = ['Feijão Carioca', 'Lentilha', 'Grão de bico', 'Ervilha seca', 'Soja', 'Milho', 'Arroz', 'Grão de trigo', 'Linhaça']
 kcal = [329, 339, 334, 341, 460, 90, 128, 205, 453]
+gpl = [1500, 2000, 800, 700, 500, 750, 3000, 2500, 700]
 #%% Inicializacao do Algoritmo Genetico
 
 tam_dna = 9
 qtd_ind = 100
-geracoes = 20000
+geracoes = 2000
 prob_mutacao = 3
 amp_mut = 0.5
 individuos_salvos = 2
@@ -37,7 +38,7 @@ S_selection = ag.ini_ExponentialRanking(0.97, qtd_ind)
 #%% Avaliacao da populacao inicial
 
 org = ag.gera_populacao (qtd_ind, tam_dna, lim_sup, lim_inf)
-retorno = ag.avaliacao (org, qtd_ind, tam_dna, 0, kcal)
+retorno = ag.avaliacao (org, qtd_ind, tam_dna, 0, kcal, gpl)
 org = ag.ordena(org, tipo)
 print('best fit: ', org['fitness'][-1])
 
@@ -68,7 +69,7 @@ for geracao in range(0, geracoes):
 
         ag.mutacao(org, filho, tam_dna, lim_sup, lim_inf, geracao, geracoes, amp_mut, prob_mutacao)
 
-    retorno = ag.avaliacao (org, qtd_ind, tam_dna, individuos_salvos, kcal)
+    retorno = ag.avaliacao (org, qtd_ind, tam_dna, individuos_salvos, kcal, gpl)
     org = ag.ordena(org, tipo)
 
     print('G: ', geracao ,' best fit: ', org['fitness'][-1])
@@ -80,11 +81,16 @@ print("fim")
 dna_best = org['dna'][-1]
 melhor = org['fitness'][-1]
 
+volume = 0
 peso = 0
+soma = 0
 for i in range(0, len(dna_best)):
+    volume += dna_best[i] / gpl[i]
     peso += dna_best[i]
+    soma += dna_best[i] * kcal[i] / 100
     print('roubou %.1f\tg de %s' %(dna_best[i], nomes[i]))
 
 print('Peso da mochila: %.1f gramas' %peso)
+print('Volume da mochila: %.1f litros' %volume)
 print('Total de calorias: %.1f kcal' %melhor)
 print('Da pra viver em torno de: %.1f dias' %(melhor/2000))

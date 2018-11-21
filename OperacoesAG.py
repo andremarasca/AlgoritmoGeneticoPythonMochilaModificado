@@ -80,22 +80,26 @@ def gera_populacao (qtd_ind, tam_dna, lim_sup, lim_inf):
     org = {'dna' : dna, 'fitness' : fitness}
     return org
 
-def avaliacao (org, qtd_ind, tam_dna, individuos_salvos, kcal):
+def avaliacao (org, qtd_ind, tam_dna, individuos_salvos, kcal, gpl):
     retorno = 0
 
     for i in range(0, qtd_ind - individuos_salvos):
-        org['fitness'][i] = definicao_problema(org['dna'][i], tam_dna, kcal)
+        org['fitness'][i] = definicao_problema(org['dna'][i], tam_dna, kcal, gpl)
 
     return retorno
 
-def definicao_problema(dna, tam_dna, kcal):
+def definicao_problema(dna, tam_dna, kcal, gpl):
+    volume = 0
     peso = 0
     soma = 0
     for i in range(0, len(dna)):
+        volume += dna[i] / gpl[i]
         peso += dna[i]
         soma += dna[i] * kcal[i] / 100
     if peso > 50000: # rasgou a mochila
         soma = soma / peso
+    if volume > 20:
+        soma = soma / volume
     return soma
 
 def ordena(org, ordem):
