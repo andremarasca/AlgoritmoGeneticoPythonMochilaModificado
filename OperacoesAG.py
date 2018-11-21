@@ -40,7 +40,7 @@ def ini_ExponentialRanking(c, qtd_ind):
         S_tmp[i] = np.round(a * S_tmp[i] +  b)
 
     return S_tmp
-    
+
 def ini_LinearRanking(tx_rep_pior, qtd_ind):
 
     tx_rep_melhor = 2 - tx_rep_pior
@@ -64,9 +64,9 @@ def ini_LinearRanking(tx_rep_pior, qtd_ind):
 
     for i in range(0, qtd_ind):
         S_tmp[i] = np.round(a *  S_tmp[i] +  b)
-    
+
     return S_tmp
-    
+
 def gera_populacao (qtd_ind, tam_dna, lim_sup, lim_inf):
 
     fitness = zeros(qtd_ind)
@@ -79,22 +79,23 @@ def gera_populacao (qtd_ind, tam_dna, lim_sup, lim_inf):
         dna.append(dna_org)
     org = {'dna' : dna, 'fitness' : fitness}
     return org
-    
-def avaliacao (org, qtd_ind, tam_dna, individuos_salvos, objetivo):
+
+def avaliacao (org, qtd_ind, tam_dna, individuos_salvos, kcal):
     retorno = 0
 
     for i in range(0, qtd_ind - individuos_salvos):
-        org['fitness'][i] = definicao_problema(org['dna'][i], tam_dna, objetivo)
-        if org['fitness'][i] < 0.0000001:
-            retorno = 1
+        org['fitness'][i] = definicao_problema(org['dna'][i], tam_dna, kcal)
 
     return retorno
-    
-def definicao_problema(dna, tam_dna, objetivo):
+
+def definicao_problema(dna, tam_dna, kcal):
+    peso = 0
     soma = 0
     for i in range(0, len(dna)):
-        soma += (dna[i] - objetivo[i])**2
-    #soma = np.sqrt(soma)
+        peso += dna[i]
+        soma += dna[i] * kcal[i] / 100
+    if peso > 50000: # rasgou a mochila
+        soma = soma / peso
     return soma
 
 def ordena(org, ordem):
@@ -103,13 +104,13 @@ def ordena(org, ordem):
     dna = zeros(len(org['fitness']))
     for i in range(0, len(org['fitness'])):
         fitness[i] = org['fitness'][idx_fit[i]]
-        dna[i] = org['dna'][idx_fit[i]] 
+        dna[i] = org['dna'][idx_fit[i]]
     if ordem == 'minimizacao':
         dna = dna[::-1]
         fitness = fitness[::-1]
     org2 = {'dna' : dna, 'fitness' : fitness}
     return org2
-    
+
 def RankingSelection  (S_selection, qtd_ind):
     return buscabinaria(rand.randint(0, 32767), qtd_ind, S_selection)
 
@@ -129,7 +130,7 @@ def buscabinaria(x, n, v):
         meio = fim
 
     return meio
-    
+
 def cruzamento (Origem, Destino, pai, mae, filho, tam_dna):
     B = rand.randint(0, 32767) / 32767.0
 
@@ -137,7 +138,7 @@ def cruzamento (Origem, Destino, pai, mae, filho, tam_dna):
         Destino['dna'][filho][i] = B * Origem['dna'][mae][i] + (1.0 - B) * Origem['dna'][pai][i]
 
 def mutacao (org, individuo, tam_dna, lim_sup, lim_inf, geracao, geracoes, b, prob_mutacao):
-    
+
     for gene in range(0, tam_dna):
         if rand.uniform(0, 100) <= prob_mutacao:
             if rand.randint(0,1) == 0:
